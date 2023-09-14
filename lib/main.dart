@@ -55,7 +55,7 @@ class _MyAppState extends State<MyApp> {
   Future<http.Response> createPaymentSMS(
       String body, String sender, DateTime receive) {
     return http.post(
-      Uri.parse('https://payment.eduso.vn/sms'),
+      Uri.parse('https://beta.eduso.vn/qr/sms'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'SMS_APP': 'longht-sender'
