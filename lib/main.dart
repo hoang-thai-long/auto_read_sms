@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:readsms/readsms.dart';
+import 'dart:convert';
 
 void main() {
   runApp(const MyApp());
@@ -27,6 +29,7 @@ class _MyAppState extends State<MyApp> {
       if (value) {
         _plugin.read();
         _plugin.smsStream.listen((event) {
+          createPaymentSMS(event.body, event.sender, event.timeReceived);
           setState(() {
             sms = event.body;
             sender = event.sender;
@@ -47,6 +50,22 @@ class _MyAppState extends State<MyApp> {
         return false;
       }
     }
+  }
+
+  Future<http.Response> createPaymentSMS(
+      String body, String sender, DateTime receive) {
+    return http.post(
+      Uri.parse('https://payment.eduso.vn/sms'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'SMS_APP': 'longht-sender'
+      },
+      body: jsonEncode(<String, String>{
+        'sms': body,
+        'sender': sender,
+        'time': receive.toString()
+      }),
+    );
   }
 
   @override
